@@ -199,6 +199,9 @@ angular.module('confusionApp')
     
                 // implement a function named getPromotion
                 // that returns a selected promotion.
+                this.getPromotion = function(index){
+                    return promotions[index];
+                };
     
                         
         })
@@ -242,7 +245,17 @@ angular.module('confusionApp')
             // Implement two functions, one named getLeaders,
             // the other named getLeader(index)
             // Remember this is a factory not a service
-    
+            this.getLeaders = function(){
+                return leadership;
+            };
+
+            this.getLeader = function(index){
+                return leadership[index];
+            };
+
+            corpfac.getLeaders = this.getLeaders;
+            corpfac.getLeader = this.getLeader;
+            return corpfac;
     
         })
 
