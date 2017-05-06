@@ -22,8 +22,8 @@
       </div>
       <ion-list>
         <ion-item ng-repeat="leader in leaders">
-          <div class="item item-text-wrap item-thumbnail-left">
-          <img ng-src="{{baseURL+leader.image}}" style="border-radius:50%;">
+          <div class="item item-text-wrap item-thumbnail-left item-avatar">
+          <img ng-src="{{baseURL+leader.image}}">
           <h2>{{leader.name}}</h2>
           <h3>{{leader.designation}}</h3>
           <p>{{leader.description}}</p>
