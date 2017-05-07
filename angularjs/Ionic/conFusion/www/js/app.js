@@ -29,7 +29,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
     url: '/app',
     abstract: true,
     templateUrl: 'templates/sidebar.html',
-    controller: 'MenuController'
+    controller: 'AppCtrl'
   })
 
   .state('app.home', {
