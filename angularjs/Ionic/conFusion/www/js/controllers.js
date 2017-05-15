@@ -176,7 +176,7 @@ angular.module('conFusion.controllers', [])
                             }
             );
             
-            $scope.popover = $ionicPopover.fromTemplateUrl('templates/popover.html', { 
+            $scope.popover = $ionicPopover.fromTemplateUrl('templates/dish-detail-popover.html', { 
                 scope: $scope
             }).then(function(popover){
                 $scope.popover = popover;
@@ -193,7 +193,7 @@ angular.module('conFusion.controllers', [])
                 $scope.closePop();
             }
 
-            $ionicModal.fromTemplateUrl('templates/comment_detail.html', {
+            $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
                 scope: $scope
             }).then(function(modal) {
                 $scope.subcomm_form =  modal;
