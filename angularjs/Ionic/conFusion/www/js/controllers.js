@@ -1,6 +1,6 @@
 angular.module('conFusion.controllers', [])
 .controller('AppCtrl', function ($scope, $ionicModal, $timeout, $localStorage, 
-$ionicPlatform, $cordovaCamera) {
+$ionicPlatform, $cordovaCamera, $cordovaImagePicker) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -111,7 +111,6 @@ $ionicPlatform, $cordovaCamera) {
             saveToPhotoAlbum: false
         };
          $scope.takePicture = function() {
-             console.log('hello')
             $cordovaCamera.getPicture(options).then(function(imageData) {
                 $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
             }, function(err) {
@@ -120,6 +119,17 @@ $ionicPlatform, $cordovaCamera) {
 
             $scope.registerform.show();
 
+        };
+        $scope.getGallery = function(){
+            console.log('hello gallery');
+            $cordovaImagePicker.getPictures(options)
+            .then(function (imageData) {
+                $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+                console.log('Image URI: ' + $scope.registration.imgSrc);
+            }, function(error) {
+                console.log('gallery:' + error)
+            });
+            $scope.registerform.show();
         };
     });
 })
@@ -225,9 +235,9 @@ $ionicPlatform, $cordovaCamera) {
         }])
 
         .controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'baseURL', 
-        '$ionicPopover', '$ionicModal',
+        '$ionicPopover', '$ionicModal', '$ionicPlatform', '$cordovaLocalNotification', '$cordovaToast',
         function($scope, $stateParams, dish, menuFactory, favoriteFactory, baseURL, 
-        $ionicPopover, $ionicModal) {
+        $ionicPopover, $ionicModal, $ionicPlatform, $cordovaLocalNotification, $cordovaToast) {
 
             $scope.baseURL = baseURL;     
             $scope.dish = {};
@@ -252,6 +262,26 @@ $ionicPlatform, $cordovaCamera) {
             $scope.addFavorite = function(){
                 favoriteFactory.addToFavorites($scope.dish.id);
                 $scope.closePop();
+                 $ionicPlatform.ready(function () {
+                    $cordovaLocalNotification.schedule({
+                        id: 1,
+                        title: "Added Favorite",
+                        text: $scope.dish.name
+                    }).then(function () {
+                        console.log('Added Favorite '+$scope.dish.name);
+                    },
+                    function () {
+                        console.log('Failed to add Notification ');
+                    });
+                    
+                    $cordovaToast
+                    .show('Added Favorite '+$scope.dish.name, 'long', 'bottom')
+                    .then(function (success) {
+                        // success
+                    }, function (error) {
+                        // error
+                    });
+                });
             }
 
             $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
@@ -323,9 +353,10 @@ $ionicPlatform, $cordovaCamera) {
 
         .controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 
         'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout',
+        '$ionicPlatform', '$cordovaVibration',
         function ($scope, dishes, favorites,
         favoriteFactory, baseURL, $ionicListDelegate, 
-        $ionicPopup, $ionicLoading, $timeout) {
+        $ionicPopup, $ionicLoading, $timeout, $ionicPlatform, $cordovaVibration) {
             $scope.baseURL = baseURL;
             $scope.shouldShowDelete = false;
 
@@ -348,6 +379,10 @@ $ionicPlatform, $cordovaCamera) {
                     if (res) {
                         console.log('Ok to delete');
                         favoriteFactory.deleteFromFavorites(index);
+                        $ionicPlatform.ready(function(){
+                            $cordovaVibration.vibrate(100);
+                            console.log('delete dishes:' + $scope.dishes[index].name)
+                        });
                     } else {
                         console.log('Canceled delete');
                     }
